@@ -1,0 +1,15 @@
+- id: anonymous
+  upstream:
+    url: https://httpbin.org/anything/header
+  match:
+    methods: [GET, HEAD]
+    url: <.+>/<.*>
+  authenticators:
+    - handler: anonymous
+      config:
+        subject: guest
+    - handler: unauthorized
+  authorizer:
+    handler: allow
+  mutators:
+    - handler: header

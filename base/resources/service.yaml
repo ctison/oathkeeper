@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: oathkeeper
+spec:
+  ports:
+    - name: http-proxy
+      port: 4455
+      targetPort: http-proxy
+    - name: http-api
+      port: 4456
+      targetPort: http-api
+    - name: http-metrics
+      port: 9000
+      targetPort: http-metrics

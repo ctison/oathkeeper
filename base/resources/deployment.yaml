@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oathkeeper
+spec:
+  template:
+    spec:
+      serviceAccount: oathkeeper
+      automountServiceAccountToken: false
+      containers:
+        - name: oathkeeper
+          image: oryd/oathkeeper
+          args:
+            - serve
+            - --disable-telemetry
+            - --sqa-opt-out
+            - --config=/etc/oathkeeper/config.yaml
+          ports:
+            - name: http-proxy
+              containerPort: 4455
+            - name: http-api
+              containerPort: 4456
+            - name: http-metrics
+              containerPort: 9000
+          readinessProbe:
+            httpGet:
+              port: http-api
+              path: /health/ready
+            initialDelaySeconds: 5
+            periodSeconds: 3
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              port: http-api
+              path: /health/alive
+            initialDelaySeconds: 5
+            periodSeconds: 3
+            failureThreshold: 3
+          volumeMounts:
+            - name: oathkeeper-config
+              mountPath: /etc/oathkeeper/
+              readOnly: true
+      volumes:
+        - name: oathkeeper-config
+          configMap:
+            name: oathkeeper-config

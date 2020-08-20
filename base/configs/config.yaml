@@ -1,0 +1,29 @@
+# ORY Oathkeeper Configuration
+
+access_rules:
+  repositories:
+    - file:///etc/oathkeeper/rules.yaml
+
+authenticators:
+  anonymous:
+    enabled: true
+  unauthorized:
+    enabled: true
+
+authorizers:
+  allow:
+    enabled: true
+  # deny:
+  #   enabled: true
+
+mutators:
+  # noop:
+  #   enabled: true
+  header:
+    enabled: true
+    config:
+      headers:
+        X-User: "{{ print .Subject }}"
+
+log:
+  format: json
